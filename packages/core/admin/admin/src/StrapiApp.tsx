@@ -348,6 +348,33 @@ class StrapiApp {
     if (isFunction(customRegister)) {
       customRegister(this);
     }
+
+    if (window.strapi.features.isEnabled(window.strapi.features.AUDIT_LOGS)) {
+      this.widgets.register([
+        {
+          icon: User,
+          title: {
+            id: 'widget.last-activity.title',
+            defaultMessage: 'Last activity',
+          },
+          component: async () => {
+            const { AuditLogsWidget } = await import(
+              '../../ee/admin/src/components/AuditLogs/Widgets'
+            );
+            return AuditLogsWidget;
+          },
+          pluginId: 'admin',
+          id: 'audit-logs',
+          link: {
+            label: {
+              id: 'widget.last-activity.link',
+              defaultMessage: 'Open Audit Logs',
+            },
+            href: '/settings/audit-logs',
+          },
+        },
+      ]);
+    }
   }
 
   async loadAdminTrads() {
