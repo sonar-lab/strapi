@@ -1,0 +1,35 @@
+
+name: SonarQube Analysis
+
+on:
+  push:
+    branches:
+      - sq-analysis
+
+jobs:
+  sonarQube:
+    name: Run SonarQube Scanner
+    runs-on: [self-hosted, Windows, X64]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Run SonarQube Scanner
+        run: |
+          & "C:\sonar-scanner\sonar-scanner-7.1.0.4889-windows-x64\bin\sonar-scanner.bat" `
+            "-Dsonar.projectKey=strapi" `
+            "-Dsonar.projectName=70-strapi" `
+            "-Dsonar.sources=." `
+            "-Dsonar.exclusions=**/*.md,**/java/**/*,**/*.java" `
+            "-Dsonar.javascript.node.maxspace=4096" `
+            "-Dsonar.sourceEncoding=UTF-8" `
+            "-Dsonar.host.url=http://localhost:9000" `
+            "-Dsonar.login=${{ secrets.SONAR_TOKEN }}"
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
